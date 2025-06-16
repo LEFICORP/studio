@@ -1,0 +1,7 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Disallow: /auth/ # Disallow auth pages
+Disallow: /settings/ # Disallow settings if they contain sensitive info not meant for indexing
+Disallow: /api/ # Disallow API routes by default, be specific if some are public
+
+Sitemap: https://yourdomain.com/sitemap.xml # Replace yourdomain.com

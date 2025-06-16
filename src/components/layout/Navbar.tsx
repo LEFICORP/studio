@@ -19,7 +19,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 const useAuth = () => ({
   isAuthenticated: false, // Set to true to simulate logged-in state
   user: { name: "User Name", email: "user@example.com", avatarUrl: "" },
-  logout: () => console.log("Logged out"),
+  logout: () => { /* console.log("Logged out"); */ }, // Removed for production
 });
 
 export function Navbar() {
@@ -60,7 +60,7 @@ export function Navbar() {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={user.avatarUrl} alt={user.name} />
+                    <AvatarImage src={user.avatarUrl} alt={user.name} data-ai-hint="person initial"/>
                     <AvatarFallback>{user.name?.charAt(0).toUpperCase()}</AvatarFallback>
                   </Avatar>
                 </Button>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react"; // Added useEffect for potential data fetching
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,24 +8,35 @@ import { Users, Link2, Share2, UserPlus, Copy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-const currentUserCode = "LFUSER-XYZ123"; // Example user code
+const currentUserCode = "LFUSER-XYZ123"; // Example user code, replace with dynamic data
 
 interface Friend {
   id: string;
   name: string;
   avatarUrl?: string;
+  dataAiHint?: string; // Keep if using placeholder images with hints
   sharedTemplates: number;
   friendshipLevel: number;
 }
 
-const dummyFriends: Friend[] = [
-  { id: "friend1", name: "Alex Johnson", avatarUrl: "https://placehold.co/100x100.png", dataAiHint: "person portrait", sharedTemplates: 3, friendshipLevel: 2 },
-  { id: "friend2", name: "Maria Garcia", avatarUrl: "https://placehold.co/100x100.png", dataAiHint: "woman smiling", sharedTemplates: 1, friendshipLevel: 1 },
-];
+// const dummyFriends: Friend[] = [
+//   { id: "friend1", name: "Alex Johnson", avatarUrl: "https://placehold.co/100x100.png", dataAiHint: "person portrait", sharedTemplates: 3, friendshipLevel: 2 },
+//   { id: "friend2", name: "Maria Garcia", avatarUrl: "https://placehold.co/100x100.png", dataAiHint: "woman smiling", sharedTemplates: 1, friendshipLevel: 1 },
+// ]; // Removed dummy data for production
 
 export default function SocialPage() {
   const [friendCode, setFriendCode] = useState("");
+  const [friendsList, setFriendsList] = useState<Friend[]>([]); // State for actual friends data
   const { toast } = useToast();
+
+  // useEffect(() => {
+  //   // Placeholder for fetching actual friends data
+  //   // async function fetchFriends() {
+  //   //   // const fetchedFriends = await api.getFriends();
+  //   //   // setFriendsList(fetchedFriends);
+  //   // }
+  //   // fetchFriends();
+  // }, []);
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(currentUserCode);
@@ -39,9 +50,10 @@ export default function SocialPage() {
     }
     // Simulate API call
     toast({ title: "Connecting...", description: `Attempting to connect with code: ${friendCode}` });
-    console.log("Adding friend with code:", friendCode);
+    // console.log("Adding friend with code:", friendCode); // Removed for production
     setFriendCode("");
     // Add friend to list or show pending request
+    // Example: setFriendsList(prev => [...prev, { id: Date.now().toString(), name: `Friend ${friendCode}`, sharedTemplates: 0, friendshipLevel: 0, avatarUrl: "https://placehold.co/100x100.png" }]);
   };
 
   return (
@@ -91,15 +103,15 @@ export default function SocialPage() {
           <CardDescription>Manage your LEFI friends and shared templates.</CardDescription>
         </CardHeader>
         <CardContent>
-          {dummyFriends.length === 0 ? (
+          {friendsList.length === 0 ? (
             <p className="text-muted-foreground text-center py-8">You haven't connected with any friends yet. Share your code or add a friend to get started!</p>
           ) : (
             <ul className="space-y-4">
-              {dummyFriends.map(friend => (
+              {friendsList.map(friend => (
                 <li key={friend.id} className="flex items-center justify-between p-4 border rounded-lg bg-card hover:bg-muted/50 transition-colors">
                   <div className="flex items-center gap-4">
                     <Avatar className="h-12 w-12">
-                      <AvatarImage src={friend.avatarUrl} alt={friend.name} data-ai-hint={friend.avatarUrl ? undefined : "person initial"}/>
+                      <AvatarImage src={friend.avatarUrl} alt={friend.name} data-ai-hint={friend.avatarUrl ? friend.dataAiHint : "person initial"}/>
                       <AvatarFallback>{friend.name.charAt(0).toUpperCase()}</AvatarFallback>
                     </Avatar>
                     <div>

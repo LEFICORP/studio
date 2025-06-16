@@ -47,7 +47,7 @@ export default function SignupPage() {
   });
 
   async function onSubmit(values: SignupFormValues) {
-    console.log("Signup submitted:", values);
+    // console.log("Signup submitted:", values); // Removed for production
     toast({
       title: "Signup Attempt",
       description: "Simulating account creation...",

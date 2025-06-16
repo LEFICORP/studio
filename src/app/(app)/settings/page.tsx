@@ -34,7 +34,7 @@ const preferencesSchema = z.object({
 type ProfileFormValues = z.infer<typeof profileSchema>;
 type PreferencesFormValues = z.infer<typeof preferencesSchema>;
 
-// Dummy data, replace with actual user data
+// Dummy data, replace with actual user data fetching
 const currentUser = {
   name: "Lefi User",
   email: "user@lefi.app",
@@ -76,12 +76,12 @@ export default function SettingsPage() {
   });
 
   function onProfileSubmit(data: ProfileFormValues) {
-    console.log("Profile updated:", data);
+    // console.log("Profile updated:", data); // Removed for production
     toast({ title: "Profile Updated", description: "Your profile information has been saved." });
   }
 
   function onPreferencesSubmit(data: PreferencesFormValues) {
-    console.log("Preferences updated:", data);
+    // console.log("Preferences updated:", data); // Removed for production
     toast({ title: "Preferences Updated", description: "Your app preferences have been saved." });
     // Handle dark mode toggle if needed, e.g., using next-themes
     if (data.darkMode) {

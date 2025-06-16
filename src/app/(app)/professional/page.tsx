@@ -1,57 +1,86 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react"; // Added useEffect for potential data fetching
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Briefcase, Search, PlusCircle, Filter, Download, Edit } from "lucide-react";
-import type { ProfessionalCompanyTemplate, BlockTemplate } from "@/lib/types"; // Assuming types are defined
+import type { ProfessionalCompanyTemplate } from "@/lib/types";
 
-const dummyTemplates: ProfessionalCompanyTemplate[] = [
-  { 
-    id_empresa_plantilla: "pt1", 
-    nombre_empresa: "City General Hospital", 
-    sector: "Salud", 
-    tipo_turno: "Rotativo",
-    descripcion: "Standard nurse shift templates.",
-    plantillas_horario: [
-      { id_plantilla: "nurse_morning", nombre_plantilla: "Nurse Morning Shift", creada_por: "pt1", tipo: "profesional", estructura_bloques: [{nombre_bloque: "Handover", duracion_minutos: 30, tier: 1}, {nombre_bloque: "Patient Rounds", duracion_minutos: 120, tier: 1}], visible: "compartida", createdAt: new Date(), updatedAt: new Date() },
-      { id_plantilla: "nurse_night", nombre_plantilla: "Nurse Night Shift", creada_por: "pt1", tipo: "profesional", estructura_bloques: [], visible: "compartida", createdAt: new Date(), updatedAt: new Date() },
-    ],
-    visible_para_empresa: true,
-    createdAt: new Date(), 
-    updatedAt: new Date() 
-  },
-  { 
-    id_empresa_plantilla: "pt2", 
-    nombre_empresa: "Tech Solutions Inc.", 
-    sector: "Tecnología", 
-    tipo_turno: "9-to-5",
-    descripcion: "Developer and project manager templates.",
-    plantillas_horario: [
-       { id_plantilla: "dev_sprint", nombre_plantilla: "Developer Sprint Week", creada_por: "pt2", tipo: "profesional", estructura_bloques: [], visible: "compartida", createdAt: new Date(), updatedAt: new Date() },
-    ],
-    visible_para_empresa: true,
-    createdAt: new Date(), 
-    updatedAt: new Date() 
-  },
-];
+// const dummyTemplates: ProfessionalCompanyTemplate[] = [
+//   { 
+//     id_empresa_plantilla: "pt1", 
+//     nombre_empresa: "City General Hospital", 
+//     sector: "Salud", 
+//     tipo_turno: "Rotativo",
+//     descripcion: "Standard nurse shift templates.",
+//     plantillas_horario: [
+//       { id_plantilla: "nurse_morning", nombre_plantilla: "Nurse Morning Shift", creada_por: "pt1", tipo: "profesional", estructura_bloques: [{nombre_bloque: "Handover", duracion_minutos: 30, tier: 1}, {nombre_bloque: "Patient Rounds", duracion_minutos: 120, tier: 1}], visible: "compartida", createdAt: new Date(), updatedAt: new Date() },
+//       { id_plantilla: "nurse_night", nombre_plantilla: "Nurse Night Shift", creada_por: "pt1", tipo: "profesional", estructura_bloques: [], visible: "compartida", createdAt: new Date(), updatedAt: new Date() },
+//     ],
+//     visible_para_empresa: true,
+//     createdAt: new Date(), 
+//     updatedAt: new Date() 
+//   },
+//   { 
+//     id_empresa_plantilla: "pt2", 
+//     nombre_empresa: "Tech Solutions Inc.", 
+//     sector: "Tecnología", 
+//     tipo_turno: "9-to-5",
+//     descripcion: "Developer and project manager templates.",
+//     plantillas_horario: [
+//        { id_plantilla: "dev_sprint", nombre_plantilla: "Developer Sprint Week", creada_por: "pt2", tipo: "profesional", estructura_bloques: [], visible: "compartida", createdAt: new Date(), updatedAt: new Date() },
+//     ],
+//     visible_para_empresa: true,
+//     createdAt: new Date(), 
+//     updatedAt: new Date() 
+//   },
+// ]; // Removed dummy data
 
-// This would be determined by user role
+// This would be determined by user role or API
 const isManager = true; 
 
 export default function ProfessionalPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sectorFilter, setSectorFilter] = useState("");
+  const [templates, setTemplates] = useState<ProfessionalCompanyTemplate[]>([]); // State for actual templates
+  const [isLoading, setIsLoading] = useState(true);
 
-  const filteredTemplates = dummyTemplates.filter(template => 
+  // useEffect(() => {
+  //   // Placeholder for fetching actual template data
+  //   // async function fetchTemplates() {
+  //   //   setIsLoading(true);
+  //   //   // const fetchedTemplates = await api.getProfessionalTemplates(); // Replace with actual API call
+  //   //   // setTemplates(fetchedTemplates);
+  //   //   setIsLoading(false);
+  //   // }
+  //   // fetchTemplates();
+  //   setIsLoading(false); // Remove this when actual fetching is implemented
+  // }, []);
+
+  // For now, to keep the UI functional without data fetching
+  useEffect(() => {
+    setIsLoading(false);
+  }, []);
+
+
+  const filteredTemplates = templates.filter(template => 
     (template.nombre_empresa.toLowerCase().includes(searchTerm.toLowerCase()) || 
      template.sector.toLowerCase().includes(searchTerm.toLowerCase())) &&
     (sectorFilter ? template.sector === sectorFilter : true)
   );
   
-  const sectors = Array.from(new Set(dummyTemplates.map(t => t.sector)));
+  const sectors = Array.from(new Set(templates.map(t => t.sector)));
+
+  if (isLoading) {
+    return (
+      <div className="p-4 md:p-8 text-center">
+        <p>Loading professional templates...</p>
+        {/* You can add a spinner component here */}
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 md:p-8">
@@ -97,12 +126,12 @@ export default function ProfessionalPage() {
         </CardContent>
       </Card>
 
-      {filteredTemplates.length === 0 ? (
+      {filteredTemplates.length === 0 && !isLoading ? ( // Added !isLoading check
          <Card className="shadow-md">
             <CardContent className="py-12 text-center">
                 <Briefcase className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
                 <h3 className="text-xl font-semibold mb-2">No Templates Found</h3>
-                <p className="text-muted-foreground">Try adjusting your search or filter criteria.</p>
+                <p className="text-muted-foreground">Try adjusting your search or filter criteria, or create a new template if you're a manager.</p>
                 {isManager && <Button className="mt-4" onClick={() => {/* Open create modal */}}>Create a Template</Button>}
             </CardContent>
          </Card>

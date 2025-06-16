@@ -32,7 +32,7 @@ import {
 // Placeholder for auth state, replace with actual context/hook
 const useAuth = () => ({
   user: { name: "Lefi User", email: "user@lefi.app", avatarUrl: "" },
-  logout: () => console.log("Logged out from AppLayout"),
+  logout: () => { /* console.log("Logged out from AppLayout"); */ }, // Removed for production
 });
 
 interface AppLayoutProps {
@@ -124,7 +124,7 @@ export function AppLayout({ children }: AppLayoutProps) {
            </SidebarMenu>
           <div className="flex items-center gap-2 p-2 mt-2 group-data-[collapsible=icon]:justify-center">
             <Avatar className="h-8 w-8">
-              <AvatarImage src={user.avatarUrl} alt={user.name} />
+              <AvatarImage src={user.avatarUrl} alt={user.name} data-ai-hint="person initial"/>
               <AvatarFallback>{user.name?.charAt(0).toUpperCase()}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col group-data-[collapsible=icon]:hidden">

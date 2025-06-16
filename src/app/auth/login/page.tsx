@@ -41,7 +41,7 @@ export default function LoginPage() {
 
   async function onSubmit(values: LoginFormValues) {
     // Simulate API call
-    console.log("Login submitted:", values);
+    // console.log("Login submitted:", values); // Removed for production
     toast({
       title: "Login Attempt",
       description: "Simulating login process...",
